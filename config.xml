@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<widget xmlns = "http://www.w3.org/ns/widgets"
+xmlns:gap = "http://phonegap.com/ns/1.0"
+id = "com.phonegap.myapp"
+version = "1.0.2">
+
+<name>myapp</name>
+<description>myapp</description>
+<author href="myapp.com" email="support@myapp.com">myapp</author>
+<preference name="orientation" value="default" />
+<preference name="fullscreen" value="true" />
+<preference name="exit-on-suspend" value="false" />
+<preference name="android-installLocation" value="auto" />
+<icon src="icon.png" />
+<icon gap:density="ldpi" gap:platform="android" src="icon36.png" />
+<icon gap:density="mdpi" gap:platform="android" src="icon48.png" />
+<icon gap:density="hdpi" gap:platform="android" src="icon72.png" />
+<icon gap:density="xhdpi" gap:platform="android" src="icon96.png" />
+<icon gap:density="xxhdpi" gap:platform="android" src="icon144.png" />
+
+<!-- PhoneGap plugins for PhoneGap Build to attach to build -->
+<!-- PhoneGap plugins for PhoneGap Build to attach to build -->
+<gap:plugin name="org.apache.cordova.device" source="pgb" />
+<gap:plugin name="org.apache.cordova.inappbrowser" source="pgb" />
+<gap:plugin name="org.apache.cordova.camera" />
+<gap:plugin name="org.apache.cordova.file" />
+<gap:plugin name="org.apache.cordova.file-transfer" />
+</widget>

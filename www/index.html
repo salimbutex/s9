@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>myapp</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css" />
+
+<link rel="stylesheet" href="css/styles.css" />
+
+</head>
+
+<body>
+<div id="propPicAddPage" data-role="page">
+
+<div data-role="header" data-position="fixed">
+<a id="add_prop_photo_back_btn" href="#" data-rel="back" class="ui-btn ui-icon-back ui-btn-icon-left">Back</a>
+
+<h1>Photos</h1>
+
+</div>
+
+<div data-role="content">
+
+<div id="xaddPropPhotoHTML">
+<script src="cordova.js"></script>
+<br>
+<br>
+<br>
+<br>
+
+<button onclick="capturePhoto();">From Camera</button> <br>
+
+<button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
+
+<img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+<img style="display:none;" id="largeImage" src="" />
+
+<input id="property_id" type="hidden" />
+
+<script type="text/javascript" charset="utf-8">
+
+var pictureSource; // picture source
+var destinationType; // sets the format of returned value
+
+// Wait for Cordova to connect with the device
+//
+document.addEventListener("deviceready",onDeviceReady,false);
+
+// Cordova is ready to be used!
+//
+function onDeviceReady() {
+pictureSource=navigator.camera.PictureSourceType;
+destinationType=navigator.camera.DestinationType;
+}
+
+// Called when a photo is successfully retrieved
+//
+function onPhotoURISuccess(fileURI) {
+
+//Transfer the file to the server
+$.mobile.loading( "show", {
+text: "Uploading photo. Please wait...",
+textVisible: true
+});
+
+var success = function (r)
+{
+clearCache();
+retries = 0;
+$("#add_prop_photo_back_btn").click();
+$("#upload_prop_pic_refresh").click();
+
+$.mobile.loading("hide");
+}
+
+var fail = function (error)
+{
+if (retries == 0)
+{
+retries ++
+setTimeout(function()
+{
+onCapturePhoto(fileURI)
+}, 1000)
+}
+else
+{
+retries = 0;
+clearCache();
+alert('Oops. Something wrong happened! Error: ' + error);
+}
+
+$.mobile.loading("hide");
+}
+
+var options = new FileUploadOptions();
+options.fileKey = "file";
+options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
+options.mimeType = "image/jpeg";
+options.params = {}; // if we need to send parameters to the server request
+var ft = new FileTransfer();
+
+var property_id = $("#addPropPic").attr("pid");
+var upload_url = "https://myapp.com/administrator/classes/upload_file/upload_photos_mobile.php?p_id=" + p_id + "&iframe_div=" + p_id + "&token=" + $("#addPropPic").attr("token") + "&action=uploadfile";
+
+ft.upload(fileURI, encodeURI(upload_url), success, fail, options);
+}
+
+// A button will call this function
+//
+function getPhoto(source) {
+
+console.log("getPhoto called...beginning to open library");
+
+// Retrieve image file location from specified source
+navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,
+destinationType: destinationType.FILE_URI,
+sourceType: source,
+correctOrientation : true });
+
+//FILE_URI
+}
+
+//////////////////////////////////////////////////////////////
+//From other website
+
+var retries = 0;
+function onCapturePhoto(fileURI)
+{
+$.mobile.loading( "show", {
+text: "Uploading photo. Please wait...",
+textVisible: true
+});
+
+var success = function (r)
+{
+clearCache();
+retries = 0;
+$("#add_prop_photo_back_btn").click();
+$("#upload_prop_pic_refresh").click();
+
+$.mobile.loading("hide");
+}
+
+var fail = function (error)
+{
+if (retries == 0)
+{
+retries ++
+setTimeout(function()
+{
+onCapturePhoto(fileURI)
+}, 1000)
+}
+else
+{
+retries = 0;
+clearCache();
+alert('Oops. Something wrong happened! Error: ' + error);
+}
+
+$.mobile.loading("hide");
+}
+
+//Transfer the file to the server
+var options = new FileUploadOptions();
+options.fileKey = "file";
+options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
+options.mimeType = "image/jpeg";
+options.params = {}; // if we need to send parameters to the server request
+var ft = new FileTransfer();
+
+var property_id = $("#addPropPic").attr("pid");
+
+var upload_url = "https://myapp.com/administrator/classes/upload_file/upload_photos_mobile.php?p_id=" + p_id + "&iframe_div=" + p_id + "&token=" + $("#addPropPic").attr("token") + "&action=uploadfile";
+
+ft.upload(fileURI, encodeURI(upload_url), success, fail, options);
+
+}
+
+function capturePhoto() {
+navigator.camera.getPicture(onCapturePhoto, onFail, {
+quality: 50,
+destinationType: destinationType.FILE_URI,
+correctOrientation : true
+});
+}
+
+function onFail(message) {
+alert('Failed because: ' + message);
+$.mobile.loading("hide");
+}
+
+function clearCache()
+{
+navigator.camera.cleanup();
+}
+
+app.initialize();
+
+</script>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
